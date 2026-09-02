@@ -3,45 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trojan – Link Safety Checker</title>
-  <meta name="description" content="Trojan analyzes links and tells you what kind of link it is and what it is trying to do.">
+  <title>Trojan – Advanced Link Safety Analyzer</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0f172a;
+      background: #0b1120;
       color: #e2e8f0;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
       padding: 40px 16px;
+      line-height: 1.5;
     }
     .container {
-      max-width: 700px;
-      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
       background: #1e293b;
       border-radius: 16px;
-      padding: 32px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      padding: 36px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
     }
     h1 {
-      font-size: 1.9rem;
-      margin-bottom: 6px;
+      font-size: 2.1rem;
       color: #38bdf8;
+      margin-bottom: 6px;
     }
     .tagline {
       color: #94a3b8;
-      margin-bottom: 28px;
-      font-size: 0.95rem;
+      margin-bottom: 30px;
+      font-size: 1.05rem;
     }
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: 600;
+      font-size: 0.95rem;
     }
     input[type="url"] {
       width: 100%;
-      padding: 14px 16px;
+      padding: 15px 16px;
       border: 2px solid #334155;
       border-radius: 10px;
       background: #0f172a;
@@ -55,263 +54,320 @@
     }
     button {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       background: #0ea5e9;
       color: white;
       border: none;
       border-radius: 10px;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: 0.2s;
     }
     button:hover { background: #0284c7; }
     #result {
-      margin-top: 28px;
-      padding: 22px;
-      border-radius: 12px;
+      margin-top: 32px;
       display: none;
     }
-    .safe { background: #064e3b; border: 1px solid #10b981; }
-    .warning { background: #78350f; border: 1px solid #f59e0b; }
-    .danger { background: #7f1d1d; border: 1px solid #ef4444; }
+    .card {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid #334155;
+    }
+    .danger { border-color: #ef4444; background: #450a0a; }
+    .warning { border-color: #f59e0b; background: #451a03; }
+    .safe { border-color: #10b981; background: #022c22; }
     .result-title {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 700;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
-    .type-box, .intent-box {
-      background: rgba(0,0,0,0.25);
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin: 12px 0;
-    }
-    .type-box strong, .intent-box strong {
-      display: block;
-      margin-bottom: 4px;
-      color: #94a3b8;
-      font-size: 0.85rem;
+    .label {
+      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      color: #94a3b8;
+      margin-bottom: 4px;
     }
-    .tips {
-      margin-top: 16px;
-      font-size: 0.9rem;
-      line-height: 1.5;
+    .value {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .explanation {
+      font-size: 0.95rem;
       color: #cbd5e1;
+      margin-top: 8px;
     }
-    .external-links {
-      margin-top: 20px;
+    ul {
+      margin: 10px 0 0 20px;
+    }
+    .deep-section {
+      background: #1e3a5f;
+      border: 1px solid #3b82f6;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+    .deep-section h3 {
+      color: #93c5fd;
+      margin-bottom: 10px;
     }
     .external-links a {
       display: inline-block;
-      margin: 6px 8px 0 0;
-      padding: 8px 14px;
-      background: #334155;
-      color: #e0f2fe;
+      margin: 8px 10px 0 0;
+      padding: 10px 16px;
+      background: #1e40af;
+      color: white;
       text-decoration: none;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-weight: 500;
     }
-    .external-links a:hover { background: #475569; }
+    .external-links a:hover { background: #1d4ed8; }
     .disclaimer {
-      margin-top: 32px;
-      font-size: 0.8rem;
+      margin-top: 30px;
+      font-size: 0.82rem;
       color: #64748b;
-      line-height: 1.45;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Trojan</h1>
-    <p class="tagline">Analyzes a link and tells you what kind it is and what it is most likely trying to do</p>
+    <p class="tagline">Advanced Link Safety Analyzer — Understand what a link is and what it is trying to do</p>
 
-    <label for="urlInput">Paste the suspicious link:</label>
-    <input type="url" id="urlInput" placeholder="https://example.com/..." autocomplete="off">
-    <button onclick="checkLink()">Scan with Trojan</button>
+    <label for="urlInput">Paste any suspicious link:</label>
+    <input type="url" id="urlInput" placeholder="https://example.com/login..." autocomplete="off">
+    <button onclick="analyze()">Analyze with Trojan</button>
 
     <div id="result"></div>
 
     <p class="disclaimer">
-      Trojan uses basic pattern detection only. It is an educational tool and cannot detect every threat.
-      Always cross-check with professional scanners and never enter passwords or personal data on sites you do not fully trust.
+      Trojan performs advanced pattern analysis in your browser. It cannot replace professional threat intelligence services.
+      Always use the Deep Scanning tools recommended below for serious cases.
     </p>
   </div>
 
   <script>
-    function checkLink() {
+    function analyze() {
       const input = document.getElementById('urlInput').value.trim();
-      if (!input) {
-        alert('Please paste a link first.');
-        return;
-      }
+      if (!input) return alert('Please paste a link first.');
 
       let url;
       try {
         url = new URL(input.startsWith('http') ? input : 'https://' + input);
-      } catch (e) {
-        showResult('danger', 'Invalid URL', 'Not a valid web address.', 'Unknown', 'Cannot analyze');
+      } catch {
+        showResult('danger', 'Invalid URL', 'This is not a valid web address.', 'Cannot analyze');
         return;
       }
 
       const hostname = url.hostname.toLowerCase();
-      const fullUrl = url.href.toLowerCase();
-      const path = url.pathname.toLowerCase();
+      const full = url.href.toLowerCase();
+      const path = url.pathname.toLowerCase() + url.search.toLowerCase();
+      const parts = hostname.split('.');
 
       let score = 0;
-      const reasons = [];
-      let linkType = 'Unknown / Generic';
-      let intent = 'No clear malicious intent detected from basic patterns.';
+      const signals = [];
+      let type = 'Generic Website';
+      let intent = 'No strong malicious patterns detected.';
+      let explanation = '';
 
-      // IP address
-      if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname)) {
-        score += 40;
-        reasons.push('Uses a raw IP address instead of a domain name');
-        linkType = 'Suspicious Direct IP Link';
-        intent = 'Often used to host phishing pages or malware while hiding the real domain.';
+      // ========== EXPANDED DETECTION RULES ==========
+
+      // 1. Raw IP address
+      if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) {
+        score += 45;
+        signals.push('Uses a raw IP address instead of a domain name');
+        type = 'Direct IP Address Link';
+        intent = 'Hide the real identity of the server';
+        explanation = 'Attackers often use IP addresses to avoid domain reputation systems and make tracking harder.';
       }
 
-      // Suspicious TLDs
-      const badTlds = ['.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top', '.club', '.icu', '.pw', '.cc', '.work', '.click'];
-      if (badTlds.some(tld => hostname.endsWith(tld))) {
+      // 2. Suspicious / free TLDs
+      const badTlds = ['.tk','.ml','.ga','.cf','.gq','.xyz','.top','.club','.icu','.pw','.cc','.work','.click','.loan','.men','.date','.faith','.review','.country','.science','.kim','.help'];
+      if (badTlds.some(t => hostname.endsWith(t))) {
+        score += 28;
+        signals.push('Uses a free or heavily abused top-level domain');
+      }
+
+      // 3. Excessive subdomains
+      if (parts.length >= 5) {
+        score += 18;
+        signals.push('Unusually long subdomain chain (common in phishing)');
+      }
+
+      // 4. Credential-related keywords
+      const credKeywords = ['login','signin','sign-in','log-in','account','verify','verification','secure','security','update','confirm','unlock','password','credential','authenticate','validation','recover','reset'];
+      if (credKeywords.some(k => hostname.includes(k) || path.includes(k))) {
         score += 25;
-        reasons.push('Uses a free or frequently abused domain ending');
+        signals.push('Contains words typically used in credential harvesting pages');
+        type = 'Possible Phishing / Credential Harvesting Page';
+        intent = 'Trick you into entering your username and password';
+        explanation = 'These pages are designed to look like real login forms (banks, email, social media, etc.) so they can steal your credentials.';
       }
 
-      // Login / credential related words
-      const credWords = ['login', 'signin', 'sign-in', 'account', 'verify', 'secure', 'update', 'confirm', 'unlock', 'password', 'credential'];
-      if (credWords.some(w => hostname.includes(w) || path.includes(w))) {
-        score += 20;
-        reasons.push('Contains words commonly used in credential-stealing pages');
-        linkType = 'Possible Phishing / Login Page';
-        intent = 'Likely designed to trick you into entering your username and password so the attacker can steal them.';
+      // 5. @ symbol obfuscation
+      if (full.includes('@') || full.includes('%40')) {
+        score += 40;
+        signals.push('Contains @ symbol (classic URL obfuscation technique)');
+        type = 'Obfuscated Phishing Link';
+        intent = 'Hide the real destination of the link';
+        explanation = 'The part before the @ is ignored by browsers. Attackers use this to make the link look like blind it goes to a trusted site.';
       }
 
-      // @ symbol trick
-      if (fullUrl.includes('@') || fullUrl.includes('%40')) {
-        score += 35;
-        reasons.push('Contains an @ symbol (classic phishing trick)');
-        linkType = 'Phishing Link (URL Obfuscation)';
-        intent = 'Tries to hide the real destination and make the link look legitimate.';
-      }
-
-      // Long subdomain
-      if (hostname.split('.').length > 4) {
-        score += 15;
-        reasons.push('Unusually long or complex subdomain structure');
-      }
-
-      // HTTP only
-      if (url.protocol === 'http:') {
-        score += 10;
-        reasons.push('Uses insecure HTTP (no encryption)');
-      }
-
-      // Brand impersonation
-      const brands = ['paypal', 'google', 'microsoft', 'apple', 'amazon', 'facebook', 'instagram', 'whatsapp', 'netflix', 'bank', 'chase', 'wellsfargo', 'coinbase', 'binance'];
-      let impersonating = null;
-      brands.forEach(brand => {
+      // 6. Brand impersonation (expanded list)
+      const brands = [
+        'paypal','google','microsoft','apple','amazon','facebook','instagram','whatsapp','netflix','spotify',
+        'bank','chase','wellsfargo','bankofamerica','citibank','hsbc','barclays','coinbase','binance','metamask',
+        'dhl','fedex','ups','usps','irs','gov','linkedin','twitter','x.com','tiktok','snapchat','outlook','office365'
+      ];
+      let matchedBrand = null;
+      for (const brand of brands) {
         if (hostname.includes(brand) && 
             !hostname.endsWith(brand + '.com') && 
             !hostname.endsWith(brand + '.net') && 
             !hostname.endsWith(brand + '.org') &&
-            !hostname.endsWith(brand + '.co')) {
-          score += 40;
-          reasons.push(`Appears to impersonate ${brand}`);
-          impersonating = brand;
-        }
-      });
-
-      if (impersonating) {
-        linkType = `Brand Impersonation (${impersonating})`;
-        intent = `Trying to look like the real ${impersonating} website so you enter your login details or personal information.`;
-      }
-
-      // File download hints
-      if (path.match(/\.(exe|apk|dmg|scr|bat|cmd|js|vbs|zip|rar)$/i) || fullUrl.includes('download') || fullUrl.includes('install')) {
-        score += 25;
-        reasons.push('Looks related to a file download');
-        if (linkType === 'Unknown / Generic') {
-          linkType = 'Possible Malware / Unwanted Download';
-          intent = 'May try to make you download and run a malicious file that can infect your phone or computer.';
+            !hostname.endsWith(brand + '.co') &&
+            !hostname.endsWith(brand + '.io')) {
+          score += 45;
+          signals.push(`Appears to impersonate “${brand}”`);
+          matchedBrand = brand;
+          break;
         }
       }
+      if (matchedBrand) {
+        type = `Brand Impersonation (${matchedBrand})`;
+        intent = `Pretend to be the official ${matchedBrand} website`;
+        explanation = `This is a very common phishing technique. The goal is to make you believe you are on the real ${matchedBrand} site so you enter your login details or personal information.`;
+      }
 
-      // Shortener detection (basic)
-      const shorteners = ['bit.ly', 'tinyurl.com', 't.co', 'goo.gl', 'ow.ly', 'is.gd', 'buff.ly', 'adf.ly'];
+      // 7. File download indicators
+      if (/\.(exe|apk|dmg|scr|bat|cmd|js|vbs|wsf|zip|rar|7z|msi|iso)$/i.test(path) || 
+          path.includes('download') || path.includes('install') || path.includes('setup') || path.includes('update')) {
+        score += 30;
+        signals.push('Strong indicators of a file download');
+        if (!matchedBrand && type === 'Generic Website') {
+          type = 'Possible Malicious Download';
+          intent = 'Get you to download and run a harmful file';
+          explanation = 'These links often try to deliver malware, spyware, or trojans that can steal data, control your device, or lock your files.';
+        }
+      }
+
+      // 8. URL shorteners
+      const shorteners = ['bit.ly','tinyurl.com','t.co','goo.gl','ow.ly','is.gd','buff.ly','adf.ly','bitly.com','cutt.ly','shorturl.at','tiny.cc','rebrand.ly'];
       if (shorteners.some(s => hostname.includes(s))) {
-        score += 15;
-        reasons.push('Uses a URL shortener (hides the real destination)');
-        if (linkType === 'Unknown / Generic') {
-          linkType = 'Shortened Link';
-          intent = 'Hides the final destination. Could be legitimate or malicious — always expand and check the real URL.';
+        score += 18;
+        signals.push('Uses a URL shortener (hides final destination)');
+        if (type === 'Generic Website') {
+          type = 'Shortened Link';
+          intent = 'Hide the real destination of the link';
+          explanation = 'Shorteners are not always malicious, but they are frequently used by attackers to disguise phishing or malware links.';
         }
       }
 
-      // Final decision
+      // 9. Homograph / look-alike characters (basic)
+      if (/[а-яА-ЯёЁ]/.test(hostname) || /[ο0]/.test(hostname) && hostname.includes('google') || hostname.includes('rnicrosoft')) {
+        score += 35;
+        signals.push('Possible look-alike (homograph) characters detected');
+      }
+
+      // 10. Suspicious path patterns
+      if (path.includes('wp-admin') || path.includes('admin') || path.includes('.php') && path.includes('login')) {
+        score += 12;
+        signals.push('Contains admin or login-related path patterns');
+      }
+
+      // 11. HTTP instead of HTTPS
+      if (url.protocol === 'http:') {
+        score += 12;
+        signals.push('Uses insecure HTTP (data can be intercepted)');
+      }
+
+      // 12. Very long URL
+      if (full.length > 120) {
+        score += 10;
+        signals.push('Unusually long URL (sometimes used to hide malicious parts)');
+      }
+
+      // ========== FINAL VERDICT ==========
       let level, title;
-      if (score >= 55) {
+      if (score >= 60) {
         level = 'danger';
-        title = '🚨 High Risk Link';
-        if (linkType === 'Unknown / Generic') {
-          linkType = 'Highly Suspicious / Likely Malicious';
-          intent = 'Shows multiple strong indicators of phishing or malware. High chance it wants to steal information or compromise your device.';
-        }
-      } else if (score >= 25) {
+        title = '🚨 High Risk – Strong signs of malicious intent';
+      } else if (score >= 30) {
         level = 'warning';
-        title = '⚠️ Suspicious Link';
-        if (linkType === 'Unknown / Generic') {
-          linkType = 'Potentially Risky';
-          intent = 'Contains some warning signs. Could be trying to extract information or lead to a harmful page.';
-        }
+        title = '⚠️ Suspicious – Proceed with extreme caution';
       } else {
         level = 'safe';
-        title = '✅ Appears Relatively Normal';
-        linkType = 'Looks Legitimate / Low Risk';
-        intent = 'No strong malicious patterns detected. Still recommended to verify with professional tools.';
+        title = '✅ Appears relatively normal';
+        type = 'Looks Legitimate / Low Risk';
+        intent = 'No strong malicious patterns detected';
+        explanation = 'Basic analysis did not find clear red flags. This does not guarantee the site is 100% safe.';
       }
 
-      showResult(level, title, linkType, intent, reasons, url.href);
+      showResult(level, title, type, intent, explanation, signals, url.href, score);
     }
 
-    function showResult(level, title, linkType, intent, reasons, originalUrl) {
-      const resultDiv = document.getElementById('result');
-      resultDiv.className = level;
-      resultDiv.style.display = 'block';
+    function showResult(level, title, type, intent, explanation, signals, originalUrl, score) {
+      const result = document.getElementById('result');
+      result.style.display = 'block';
 
       let html = `
-        <div class="result-title">${title}</div>
-        
-        <div class="type-box">
-          <strong>What kind of link is this?</strong>
-          ${linkType}
-        </div>
-        
-        <div class="intent-box">
-          <strong>What is it most likely meant to do?</strong>
-          ${intent}
-        </div>
+        <div class="card ${level}">
+          <div class="result-title">${title}</div>
+          
+          <div class="label">What kind of link is this?</div>
+          <div class="value">${type}</div>
+          
+          <div class="label">What is it most likely trying to do?</div>
+          <div class="value">${intent}</div>
+          
+          <div class="explanation">${explanation}</div>
       `;
 
-      if (reasons.length > 0) {
-        html += `<div class="tips"><strong>Detected signals:</strong><ul style="margin-top:8px; padding-left:20px;">`;
-        reasons.forEach(r => html += `<li>${r}</li>`);
-        html += `</ul></div>`;
+      if (signals.length > 0) {
+        html += `
+          <div style="margin-top:18px">
+            <div class="label">Detection signals found (${signals.length})</div>
+            <ul>
+              ${signals.map(s => `<li>${s}</li>`).join('')}
+            </ul>
+          </div>
+        `;
       }
 
+      html += `</div>`;
+
+      // Deep Scanning section
       const encoded = encodeURIComponent(originalUrl);
       html += `
-        <div class="external-links">
-          <strong>Verify with professional scanners:</strong><br>
-          <a href="https://www.virustotal.com/gui/search/${encoded}" target="_blank" rel="noopener">VirusTotal</a>
-          <a href="https://transparencyreport.google.com/safe-browsing/search?url=${encoded}" target="_blank" rel="noopener">Google Safe Browsing</a>
-          <a href="https://urlscan.io/search/#${encoded}" target="_blank" rel="noopener">urlscan.io</a>
-          <a href="https://www.phishtank.com/" target="_blank" rel="noopener">PhishTank</a>
+        <div class="deep-section">
+          <h3>🔍 Deep Scanning (Recommended)</h3>
+          <p style="margin-bottom:14px">
+            The analysis above is only <strong>surface pattern detection</strong> done in your browser.
+            Real deep scanning is much more powerful and includes:
+          </p>
+          <ul style="margin-bottom:16px">
+            <li>Actually visiting the page and analyzing its content</li>
+            <li>Checking for phishing kits, login forms, and stolen brand assets</li>
+            <li>Following all redirects to the final destination</li>
+            <li>Scanning against dozens of antivirus and threat intelligence engines</li>
+            <li>Detecting malware, cryptojacking scripts, and malicious downloads</li>
+            <li>Historical reputation and domain age analysis</li>
+          </ul>
+          <p style="margin-bottom:14px"><strong>Run deep scans now with professional tools:</strong></p>
+          <div class="external-links">
+            <a href="https://www.virustotal.com/gui/search/${encoded}" target="_blank" rel="noopener">VirusTotal (70+ engines)</a>
+            <a href="https://urlscan.io/search/#${encoded}" target="_blank" rel="noopener">urlscan.io (full page analysis)</a>
+            <a href="https://transparencyreport.google.com/safe-browsing/search?url=${encoded}" target="_blank" rel="noopener">Google Safe Browsing</a>
+            <a href="https://www.phishtank.com/" target="_blank" rel="noopener">PhishTank</a>
+          </div>
         </div>
       `;
 
-      resultDiv.innerHTML = html;
+      result.innerHTML = html;
     }
   </script>
 </body>
