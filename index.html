@@ -11,26 +11,26 @@
       background: #0b1120;
       color: #e2e8f0;
       min-height: 100vh;
-      padding: 40px 16px;
+      padding: 32px 16px;
       line-height: 1.55;
     }
     .container {
-      max-width: 800px;
+      max-width: 820px;
       margin: 0 auto;
       background: #1e293b;
       border-radius: 16px;
-      padding: 36px;
+      padding: 32px;
       box-shadow: 0 25px 50px rgba(0,0,0,0.5);
     }
     h1 {
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       color: #38bdf8;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .tagline {
       color: #94a3b8;
-      margin-bottom: 28px;
-      font-size: 1.05rem;
+      margin-bottom: 24px;
+      font-size: 1rem;
     }
     label {
       display: block;
@@ -39,37 +39,49 @@
     }
     input[type="url"] {
       width: 100%;
-      padding: 15px 16px;
+      padding: 14px 16px;
       border: 2px solid #334155;
       border-radius: 10px;
       background: #0f172a;
       color: #f1f5f9;
       font-size: 1rem;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     input[type="url"]:focus {
       outline: none;
       border-color: #38bdf8;
     }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
     button {
-      width: 100%;
-      padding: 15px;
-      background: #0ea5e9;
-      color: white;
+      flex: 1;
+      padding: 14px;
       border: none;
       border-radius: 10px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
     }
-    button:hover { background: #0284c7; }
-    #result { margin-top: 32px; display: none; }
+    .btn-primary {
+      background: #0ea5e9;
+      color: white;
+    }
+    .btn-primary:hover { background: #0284c7; }
+    .btn-secondary {
+      background: #334155;
+      color: #e2e8f0;
+    }
+    .btn-secondary:hover { background: #475569; }
+    #result { margin-top: 28px; display: none; }
     .card {
       background: #0f172a;
       border-radius: 12px;
-      padding: 22px;
-      margin-bottom: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
       border: 1px solid #334155;
     }
     .danger { border-color: #ef4444; background: #450a0a; }
@@ -77,67 +89,110 @@
     .caution { border-color: #eab308; background: #422006; }
     .safe { border-color: #10b981; background: #022c22; }
     .result-title {
-      font-size: 1.45rem;
+      font-size: 1.35rem;
       font-weight: 700;
-      margin-bottom: 18px;
-    }
-    .section {
       margin-bottom: 16px;
     }
+    .score-box {
+      display: inline-block;
+      background: rgba(0,0,0,0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 14px;
+    }
+    .section { margin-bottom: 14px; }
     .label {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #94a3b8;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
     .value {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 600;
-      margin-bottom: 6px;
     }
     .explanation {
-      font-size: 0.95rem;
+      font-size: 0.93rem;
       color: #cbd5e1;
-      margin-top: 6px;
+      margin-top: 4px;
     }
-    ul { margin: 8px 0 0 20px; }
-    li { margin-bottom: 4px; }
+    ul { margin: 6px 0 0 18px; }
+    li { margin-bottom: 3px; font-size: 0.93rem; }
+    .advice-box {
+      background: rgba(0,0,0,0.25);
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 0.95rem;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .actions button {
+      flex: none;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+    }
     .deep-section {
       background: #1e3a5f;
       border: 1px solid #3b82f6;
       border-radius: 12px;
-      padding: 20px;
-      margin-top: 10px;
+      padding: 18px;
+      margin-top: 8px;
     }
     .deep-section h3 {
       color: #93c5fd;
-      margin-bottom: 10px;
-      font-size: 1.15rem;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
     }
     .external-links a {
       display: inline-block;
-      margin: 8px 10px 0 0;
-      padding: 10px 16px;
+      margin: 6px 8px 0 0;
+      padding: 9px 14px;
       background: #1e40af;
       color: white;
       text-decoration: none;
       border-radius: 8px;
       font-weight: 500;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
     .external-links a:hover { background: #1d4ed8; }
-    .disclaimer {
+    .history-section {
       margin-top: 28px;
-      font-size: 0.82rem;
-      color: #64748b;
+      border-top: 1px solid #334155;
+      padding-top: 20px;
     }
-    .advice-box {
-      background: rgba(0,0,0,0.25);
-      padding: 14px 16px;
+    .history-section h3 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      color: #94a3b8;
+    }
+    .history-item {
+      background: #0f172a;
+      padding: 10px 14px;
       border-radius: 8px;
-      margin-top: 14px;
-      font-size: 0.95rem;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: 1px solid #334155;
+    }
+    .history-item:hover { border-color: #38bdf8; }
+    .history-item .url {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #94a3b8;
+    }
+    .disclaimer {
+      margin-top: 24px;
+      font-size: 0.8rem;
+      color: #64748b;
     }
   </style>
 </head>
@@ -148,18 +203,30 @@
 
     <label for="urlInput">Paste any suspicious link:</label>
     <input type="url" id="urlInput" placeholder="https://example.com/..." autocomplete="off">
-    <button onclick="analyze()">Analyze with Trojan</button>
+    
+    <div class="btn-row">
+      <button class="btn-primary" onclick="analyze()">Analyze with Trojan</button>
+      <button class="btn-secondary" onclick="clearAll()">Clear</button>
+    </div>
 
     <div id="result"></div>
 
+    <div class="history-section" id="historySection" style="display:none;">
+      <h3>Recent Scans</h3>
+      <div id="historyList"></div>
+    </div>
+
     <p class="disclaimer">
       Trojan performs advanced pattern and context analysis in your browser. 
-      It is much smarter than basic checkers but still cannot fully replace live multi-source analysis.
+      It is useful for quick checks but cannot fully replace professional multi-engine scanners.
       Always use the Deep Scanning tools for important decisions.
     </p>
   </div>
 
   <script>
+    // Load history on start
+    document.addEventListener('DOMContentLoaded', loadHistory);
+
     function analyze() {
       const input = document.getElementById('urlInput').value.trim();
       if (!input) return alert('Please paste a link first.');
@@ -168,7 +235,7 @@
       try {
         url = new URL(input.startsWith('http') ? input : 'https://' + input);
       } catch {
-        showResult('danger', 'Invalid URL', 'This is not a valid web address.', '', '', [], '');
+        showResult('danger', 'Invalid URL', 0, 'Invalid', 'This is not a valid web address.', '', [], 'Please check the link and try again.', input);
         return;
       }
 
@@ -181,55 +248,55 @@
       const signals = [];
       let type = 'Generic Website';
       let intent = 'No strong malicious or scam patterns detected.';
-      let explanation = 'Basic analysis did not find clear red flags.';
-      let advice = 'Still recommended to verify with professional tools before trusting the site.';
+      let explanation = 'Surface analysis did not find clear red flags.';
+      let advice = 'Still recommended to verify with professional tools before fully trusting the site.';
 
-      // ========== SMART DETECTION RULES ==========
+      // ========== DETECTION RULES ==========
 
-      // 1. Heavily abused TLDs (strong signal)
-      const highRiskTlds = ['.top', '.xyz', '.icu', '.pw', '.cc', '.work', '.click', '.loan', '.men', '.date', '.faith', '.review', '.country', '.science', '.kim', '.help', '.tk', '.ml', '.ga', '.cf', '.gq'];
+      // High-risk TLDs
+      const highRiskTlds = ['.top','.xyz','.icu','.pw','.cc','.work','.click','.loan','.men','.date','.faith','.review','.country','.science','.kim','.help','.tk','.ml','.ga','.cf','.gq','.buzz','.monster','.rest'];
       const isHighRiskTld = highRiskTlds.some(t => hostname.endsWith(t));
       if (isHighRiskTld) {
-        score += 35;
+        score += 32;
         signals.push('Uses a heavily abused top-level domain (.' + hostname.split('.').pop() + ')');
       }
 
-      // 2. Raw IP address
+      // Raw IP
       if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) {
-        score += 45;
+        score += 42;
         signals.push('Uses a raw IP address instead of a domain name');
         type = 'Direct IP Address Link';
         intent = 'Hide the real identity of the server';
-        explanation = 'Attackers often use raw IPs to avoid domain reputation checks.';
+        explanation = 'Attackers often use raw IPs to avoid domain reputation systems.';
       }
 
-      // 3. Excessive subdomains
+      // Long subdomains
       if (parts.length >= 5) {
-        score += 18;
+        score += 16;
         signals.push('Unusually long or complex subdomain structure');
       }
 
-      // 4. Credential harvesting keywords
-      const credKeywords = ['login','signin','sign-in','log-in','account','verify','verification','secure','security','update','confirm','unlock','password','credential','authenticate','validation','recover','reset','wallet','seed','phrase'];
+      // Credential / wallet keywords
+      const credKeywords = ['login','signin','sign-in','log-in','account','verify','verification','secure','security','update','confirm','unlock','password','credential','authenticate','validation','recover','reset','wallet','seed','phrase','mnemonic','private key'];
       if (credKeywords.some(k => hostname.includes(k) || path.includes(k))) {
-        score += 30;
+        score += 28;
         signals.push('Contains words commonly used in credential or wallet phishing');
-        type = 'Possible Phishing / Credential Harvesting Page';
-        intent = 'Trick you into entering passwords, seed phrases, or personal information';
-        explanation = 'These pages are designed to look legitimate so they can steal your login details or crypto wallet information.';
+        type = 'Possible Phishing / Credential Harvesting';
+        intent = 'Trick you into entering passwords, seed phrases or personal information';
+        explanation = 'These pages are designed to look legitimate so they can steal your login details or crypto information.';
       }
 
-      // 5. @ symbol obfuscation
+      // @ obfuscation
       if (full.includes('@') || full.includes('%40')) {
-        score += 40;
-        signals.push('Contains @ symbol (classic URL obfuscation technique)');
+        score += 38;
+        signals.push('Contains @ symbol (classic URL obfuscation)');
         type = 'Obfuscated Phishing Link';
         intent = 'Hide the real destination of the link';
-        explanation = 'Browsers ignore the part before the @. Attackers use this to make dangerous links look safe.';
+        explanation = 'Browsers ignore the part before the @. This is a classic phishing technique.';
       }
 
-      // 6. Brand impersonation
-      const brands = ['paypal','google','microsoft','apple','amazon','facebook','instagram','whatsapp','netflix','spotify','binance','coinbase','metamask','chase','wellsfargo','bankofamerica','citibank','hsbc','dhl','fedex','ups','usps','irs','linkedin','outlook','office365','telegram'];
+      // Brand impersonation
+      const brands = ['paypal','google','microsoft','apple','amazon','facebook','instagram','whatsapp','netflix','spotify','binance','coinbase','metamask','chase','wellsfargo','bankofamerica','citibank','hsbc','dhl','fedex','ups','usps','irs','linkedin','outlook','office365','telegram','discord'];
       let matchedBrand = null;
       for (const brand of brands) {
         if (hostname.includes(brand) && 
@@ -238,8 +305,9 @@
             !hostname.endsWith(brand + '.org') &&
             !hostname.endsWith(brand + '.co') &&
             !hostname.endsWith(brand + '.io') &&
-            !hostname.endsWith(brand + '.app')) {
-          score += 45;
+            !hostname.endsWith(brand + '.app') &&
+            !hostname.endsWith(brand + '.me')) {
+          score += 42;
           signals.push(`Appears to impersonate “${brand}”`);
           matchedBrand = brand;
           break;
@@ -248,75 +316,88 @@
       if (matchedBrand) {
         type = `Brand Impersonation (${matchedBrand})`;
         intent = `Pretend to be the official ${matchedBrand} website`;
-        explanation = `This is a classic phishing technique. The goal is to make you believe you are on the real ${matchedBrand} site so you enter sensitive information.`;
+        explanation = `This is a common phishing technique aimed at stealing your ${matchedBrand} credentials or information.`;
       }
 
-      // 7. Reward / Task / Earn money sites (very common scam pattern)
-      const rewardKeywords = ['earn','reward','rewards','task','tasks','daily task','free money','make money','cashout','withdraw','referral','invite','bonus'];
+      // Reward / Task / Earn sites
+      const rewardKeywords = ['earn','reward','rewards','task','tasks','daily task','free money','make money','cashout','withdraw','referral','invite','bonus','tap','mining'];
       const hasRewardPattern = rewardKeywords.some(k => hostname.includes(k) || path.includes(k) || full.includes(k));
-      if (hasRewardPattern || hostname.includes('tapraba') || hostname.includes('tap-raba') || hostname.includes('tapearn')) {
-        score += 25;
-        signals.push('Matches common “earn money / tasks / rewards” site pattern');
+      if (hasRewardPattern) {
+        score += 22;
+        signals.push('Matches common “earn money / tasks / rewards” pattern');
         if (type === 'Generic Website') {
           type = 'Reward / Task / Referral Site';
-          intent = 'Get users to complete tasks, refer others, or submit personal information in exchange for promised rewards';
-          explanation = 'These sites are very common. Many are low-quality, collect personal data, push surveys/offers, or never pay. The combination with a high-risk domain makes them more suspicious.';
+          intent = 'Get users to complete tasks, refer others, or submit information for promised rewards';
+          explanation = 'These sites are very common. Many collect personal data, push low-quality offers, or never pay out reliably.';
         }
       }
 
-      // 8. File download indicators
+      // Telegram specific
+      if (hostname === 't.me' || hostname.endsWith('.t.me') || full.includes('t.me/')) {
+        score += 8;
+        signals.push('Telegram link detected');
+        if (path.includes('bot') || full.includes('bot') || full.includes('startapp')) {
+          score += 12;
+          signals.push('Appears to be a Telegram bot link');
+          type = 'Telegram Bot Link';
+          intent = 'Open a Telegram bot (can be legitimate or malicious)';
+          explanation = 'Telegram bots can be useful or dangerous. Be careful with bots that ask for personal information, seed phrases, or payments.';
+          advice = 'Only open Telegram bots from sources you fully trust. Check the bot username carefully.';
+        }
+      }
+
+      // File download
       if (/\.(exe|apk|dmg|scr|bat|cmd|js|vbs|wsf|zip|rar|7z|msi|iso)$/i.test(path) || 
           path.includes('download') || path.includes('install') || path.includes('setup')) {
-        score += 28;
+        score += 26;
         signals.push('Strong indicators of a file download');
         if (type === 'Generic Website') {
           type = 'Possible Malicious or Unwanted Download';
           intent = 'Get you to download and run a file';
-          explanation = 'These links often deliver malware, unwanted software, or trojans.';
+          explanation = 'These links often deliver malware or unwanted software.';
         }
       }
 
-      // 9. URL shorteners
+      // Shorteners
       const shorteners = ['bit.ly','tinyurl.com','t.co','goo.gl','ow.ly','is.gd','buff.ly','adf.ly','cutt.ly','shorturl.at','tiny.cc','rebrand.ly'];
       if (shorteners.some(s => hostname.includes(s))) {
-        score += 15;
-        signals.push('Uses a URL shortener (hides the final destination)');
+        score += 14;
+        signals.push('Uses a URL shortener (hides final destination)');
       }
 
-      // 10. HTTP only
+      // HTTP
       if (url.protocol === 'http:') {
-        score += 12;
-        signals.push('Uses insecure HTTP (connection is not encrypted)');
+        score += 10;
+        signals.push('Uses insecure HTTP (not encrypted)');
       }
 
-      // 11. Very long URL
+      // Long URL
       if (full.length > 130) {
-        score += 8;
+        score += 7;
         signals.push('Unusually long URL');
       }
 
-      // ========== FINAL SMART VERDICT ==========
+      // ========== FINAL VERDICT ==========
       let level, title;
 
-      if (score >= 65) {
+      if (score >= 60) {
         level = 'danger';
         title = '🚨 High Risk – Strong signs of malicious or scam intent';
         advice = 'Do not enter any personal information, passwords, or download anything. Close the page.';
-      } else if (score >= 40) {
+      } else if (score >= 38) {
         level = 'warning';
         title = '⚠️ Suspicious – Exercise strong caution';
-        advice = 'This link shows multiple warning signs. Avoid entering personal data or passwords. Verify with professional scanners.';
-      } else if (score >= 22 || isHighRiskTld) {
+        advice = 'This link shows multiple warning signs. Avoid entering personal data. Verify with professional scanners.';
+      } else if (score >= 20 || isHighRiskTld) {
         level = 'caution';
-        title = '⚡ Caution – Risky domain or pattern detected';
+        title = '⚡ Caution – Risky patterns detected';
         if (isHighRiskTld && hasRewardPattern) {
           type = 'Reward / Task Site on High-Risk Domain';
-          intent = 'Likely trying to get users to complete tasks or submit information for promised rewards';
-          explanation = 'The combination of a heavily abused domain (.top / .xyz etc.) with a reward/task/referral model is a very common pattern for low-trust or scam sites. Even if no malware is currently detected, these sites often collect personal data or push low-quality offers.';
-          advice = 'Treat with caution. Do not enter real personal information or expect reliable payouts. Better to avoid.';
+          explanation = 'The combination of a heavily abused domain with a reward/task model is a very common pattern for low-trust or scam sites.';
+          advice = 'Treat with caution. Do not enter real personal information or expect reliable payouts.';
         } else if (isHighRiskTld) {
-          explanation = 'This domain uses a top-level domain that is frequently abused for scams and phishing. While no strong malware patterns were found, extra caution is recommended.';
-          advice = 'Be careful. Prefer not to enter personal information until you have verified the site through professional tools.';
+          explanation = 'This domain uses a top-level domain that is frequently abused for scams. Extra caution is recommended.';
+          advice = 'Be careful. Prefer not to enter personal information until you verify the site.';
         }
       } else {
         level = 'safe';
@@ -324,19 +405,24 @@
         type = 'Looks Legitimate / Low Risk';
         intent = 'No strong malicious or scam patterns detected';
         explanation = 'Surface analysis did not find clear red flags. This does not guarantee the site is 100% safe.';
-        advice = 'Still recommended to verify with professional tools before trusting the site fully.';
+        advice = 'Still recommended to verify with professional tools before fully trusting the site.';
       }
 
-      showResult(level, title, type, intent, explanation, signals, advice, url.href);
+      // Cap score at 100
+      score = Math.min(score, 100);
+
+      showResult(level, title, score, type, intent, explanation, signals, advice, url.href);
+      saveToHistory(url.href, title, score);
     }
 
-    function showResult(level, title, type, intent, explanation, signals, advice, originalUrl) {
+    function showResult(level, title, score, type, intent, explanation, signals, advice, originalUrl) {
       const result = document.getElementById('result');
       result.style.display = 'block';
 
       let html = `
         <div class="card ${level}">
           <div class="result-title">${title}</div>
+          <div class="score-box">Risk Score: ${score}/100</div>
           
           <div class="section">
             <div class="label">What kind of link is this?</div>
@@ -353,7 +439,7 @@
       if (signals.length > 0) {
         html += `
           <div class="section">
-            <div class="label">Detection signals found (${signals.length})</div>
+            <div class="label">Detection signals (${signals.length})</div>
             <ul>
               ${signals.map(s => `<li>${s}</li>`).join('')}
             </ul>
@@ -363,30 +449,94 @@
 
       html += `
           <div class="advice-box">
-            <strong>Advice:</strong> ${advice}
+            <strong>What should you do?</strong><br>${advice}
+          </div>
+
+          <div class="actions">
+            <button class="btn-secondary" onclick="copyReport()">Copy Report</button>
           </div>
         </div>
       `;
 
       // Deep Scanning
       const encoded = encodeURIComponent(originalUrl);
+      const domain = originalUrl.replace(/^https?:\/\//, '').split('/')[0];
       html += `
         <div class="deep-section">
-          <h3>🔍 Deep Scanning (Strongly Recommended)</h3>
-          <p style="margin-bottom:12px">
-            The analysis above is advanced browser-based pattern and context detection.
-            For the closest thing to a full professional analysis, check the same link on these tools:
+          <h3>🔍 Deep Scanning (Recommended)</h3>
+          <p style="margin-bottom:10px; font-size:0.93rem;">
+            For stronger analysis, check this link on professional tools:
           </p>
           <div class="external-links">
             <a href="https://www.virustotal.com/gui/search/${encoded}" target="_blank" rel="noopener">VirusTotal</a>
             <a href="https://urlscan.io/search/#${encoded}" target="_blank" rel="noopener">urlscan.io</a>
             <a href="https://transparencyreport.google.com/safe-browsing/search?url=${encoded}" target="_blank" rel="noopener">Google Safe Browsing</a>
-            <a href="https://www.scamadviser.com/check-website/${originalUrl.replace(/^https?:\/\//, '').split('/')[0]}" target="_blank" rel="noopener">Scamadviser</a>
+            <a href="https://www.scamadviser.com/check-website/${domain}" target="_blank" rel="noopener">Scamadviser</a>
           </div>
         </div>
       `;
 
       result.innerHTML = html;
+
+      // Store current report for copy
+      window.currentReport = `Trojan Link Analysis Report
+-----------------------------
+URL: ${originalUrl}
+Verdict: ${title}
+Risk Score: ${score}/100
+Type: ${type}
+Intent: ${intent}
+Explanation: ${explanation}
+Signals: ${signals.join('; ') || 'None'}
+Advice: ${advice}
+-----------------------------
+Generated by Trojan – Smart Link Analyzer`;
+    }
+
+    function copyReport() {
+      if (!window.currentReport) return;
+      navigator.clipboard.writeText(window.currentReport).then(() => {
+        alert('Report copied to clipboard!');
+      }).catch(() => {
+        alert('Could not copy. Please select and copy manually.');
+      });
+    }
+
+    function saveToHistory(url, verdict, score) {
+      let history = JSON.parse(localStorage.getItem('trojanHistory') || '[]');
+      // Remove duplicates
+      history = history.filter(item => item.url !== url);
+      history.unshift({ url, verdict, score, time: new Date().toLocaleString() });
+      // Keep only last 10
+      history = history.slice(0, 10);
+      localStorage.setItem('trojanHistory', JSON.stringify(history));
+      loadHistory();
+    }
+
+    function loadHistory() {
+      const history = JSON.parse(localStorage.getItem('trojanHistory') || '[]');
+      const section = document.getElementById('historySection');
+      const list = document.getElementById('historyList');
+
+      if (history.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+
+      section.style.display = 'block';
+      list.innerHTML = history.map(item => `
+        <div class="history-item" onclick="document.getElementById('urlInput').value='${item.url}'; analyze();">
+          <div><strong>${item.verdict}</strong> (${item.score}/100)</div>
+          <div class="url">${item.url}</div>
+          <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">${item.time}</div>
+        </div>
+      `).join('');
+    }
+
+    function clearAll() {
+      document.getElementById('urlInput').value = '';
+      document.getElementById('result').style.display = 'none';
+      window.currentReport = null;
     }
   </script>
 </body>
