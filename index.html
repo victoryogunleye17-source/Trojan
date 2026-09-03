@@ -5,201 +5,273 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trojan – Smart Link Analyzer</title>
   <style>
+    :root {
+      --bg: #0b1120;
+      --card: #1e293b;
+      --input-bg: #0f172a;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: #334155;
+      --primary: #0ea5e9;
+      --primary-hover: #0284c7;
+    }
+    body.light {
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --input-bg: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0b1120;
-      color: #e2e8f0;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-      padding: 32px 16px;
+      padding: 28px 16px;
       line-height: 1.55;
+      transition: background 0.3s, color 0.3s;
     }
     .container {
       max-width: 820px;
       margin: 0 auto;
-      background: #1e293b;
+      background: var(--card);
       border-radius: 16px;
-      padding: 32px;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      transition: background 0.3s;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
     }
     h1 {
-      font-size: 2.1rem;
+      font-size: 2rem;
       color: #38bdf8;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
+    body.light h1 { color: #0284c7; }
     .tagline {
-      color: #94a3b8;
-      margin-bottom: 24px;
-      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+      font-size: 0.98rem;
     }
+    .stats {
+      background: rgba(14, 165, 233, 0.12);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .stats strong { color: #38bdf8; }
+    body.light .stats strong { color: #0284c7; }
     label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
       font-weight: 600;
     }
     input[type="url"] {
       width: 100%;
-      padding: 14px 16px;
-      border: 2px solid #334155;
+      padding: 13px 15px;
+      border: 2px solid var(--border);
       border-radius: 10px;
-      background: #0f172a;
-      color: #f1f5f9;
+      background: var(--input-bg);
+      color: var(--text);
       font-size: 1rem;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     input[type="url"]:focus {
       outline: none;
-      border-color: #38bdf8;
+      border-color: var(--primary);
     }
     .btn-row {
       display: flex;
       gap: 10px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
     }
     button {
-      flex: 1;
-      padding: 14px;
+      padding: 12px 16px;
       border: none;
       border-radius: 10px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
     }
     .btn-primary {
-      background: #0ea5e9;
+      background: var(--primary);
       color: white;
+      flex: 1;
+      min-width: 140px;
     }
-    .btn-primary:hover { background: #0284c7; }
+    .btn-primary:hover { background: var(--primary-hover); }
     .btn-secondary {
-      background: #334155;
-      color: #e2e8f0;
+      background: var(--border);
+      color: var(--text);
     }
-    .btn-secondary:hover { background: #475569; }
-    #result { margin-top: 28px; display: none; }
+    .btn-secondary:hover { opacity: 0.85; }
+    .theme-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      border-radius: 8px;
+    }
+    #result { margin-top: 24px; display: none; }
     .card {
-      background: #0f172a;
+      background: var(--input-bg);
       border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 16px;
-      border: 1px solid #334155;
+      padding: 18px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
     }
-    .danger { border-color: #ef4444; background: #450a0a; }
-    .warning { border-color: #f59e0b; background: #451a03; }
-    .caution { border-color: #eab308; background: #422006; }
-    .safe { border-color: #10b981; background: #022c22; }
+    .danger { border-color: #ef4444; background: #450a0a; color: #fecaca; }
+    .warning { border-color: #f59e0b; background: #451a03; color: #fde68a; }
+    .caution { border-color: #eab308; background: #422006; color: #fef08a; }
+    .safe { border-color: #10b981; background: #022c22; color: #a7f3d0; }
+    body.light .danger { background: #fef2f2; color: #991b1b; }
+    body.light .warning { background: #fffbeb; color: #92400e; }
+    body.light .caution { background: #fefce8; color: #854d0e; }
+    body.light .safe { background: #ecfdf5; color: #065f46; }
     .result-title {
-      font-size: 1.35rem;
+      font-size: 1.3rem;
       font-weight: 700;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
     .score-box {
       display: inline-block;
-      background: rgba(0,0,0,0.3);
-      padding: 6px 14px;
+      background: rgba(0,0,0,0.25);
+      padding: 5px 12px;
       border-radius: 20px;
       font-weight: 700;
-      font-size: 1.1rem;
-      margin-bottom: 14px;
+      font-size: 1.05rem;
+      margin-bottom: 12px;
     }
-    .section { margin-bottom: 14px; }
+    body.light .score-box { background: rgba(0,0,0,0.08); }
+    .section { margin-bottom: 12px; }
     .label {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #94a3b8;
-      margin-bottom: 3px;
+      color: var(--muted);
+      margin-bottom: 2px;
     }
-    .value {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
+    .value { font-size: 1.05rem; font-weight: 600; }
     .explanation {
-      font-size: 0.93rem;
-      color: #cbd5e1;
-      margin-top: 4px;
+      font-size: 0.92rem;
+      opacity: 0.9;
+      margin-top: 3px;
     }
-    ul { margin: 6px 0 0 18px; }
-    li { margin-bottom: 3px; font-size: 0.93rem; }
+    ul { margin: 5px 0 0 18px; }
+    li { margin-bottom: 2px; font-size: 0.92rem; }
     .advice-box {
-      background: rgba(0,0,0,0.25);
-      padding: 12px 14px;
+      background: rgba(0,0,0,0.2);
+      padding: 11px 13px;
       border-radius: 8px;
-      margin-top: 12px;
-      font-size: 0.95rem;
+      margin-top: 10px;
+      font-size: 0.93rem;
     }
+    body.light .advice-box { background: rgba(0,0,0,0.05); }
     .actions {
       display: flex;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 8px;
+      margin-top: 12px;
       flex-wrap: wrap;
     }
     .actions button {
-      flex: none;
-      padding: 10px 16px;
-      font-size: 0.9rem;
+      padding: 9px 14px;
+      font-size: 0.88rem;
     }
     .deep-section {
       background: #1e3a5f;
       border: 1px solid #3b82f6;
       border-radius: 12px;
-      padding: 18px;
-      margin-top: 8px;
+      padding: 16px;
+      margin-top: 6px;
+    }
+    body.light .deep-section {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: #1e3a5f;
     }
     .deep-section h3 {
       color: #93c5fd;
-      margin-bottom: 8px;
-      font-size: 1.1rem;
+      margin-bottom: 7px;
+      font-size: 1.05rem;
     }
+    body.light .deep-section h3 { color: #1d4ed8; }
     .external-links a {
       display: inline-block;
-      margin: 6px 8px 0 0;
-      padding: 9px 14px;
+      margin: 5px 7px 0 0;
+      padding: 8px 13px;
       background: #1e40af;
       color: white;
       text-decoration: none;
       border-radius: 8px;
       font-weight: 500;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
     }
     .external-links a:hover { background: #1d4ed8; }
     .history-section {
-      margin-top: 28px;
-      border-top: 1px solid #334155;
-      padding-top: 20px;
+      margin-top: 24px;
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
     }
     .history-section h3 {
-      font-size: 1.1rem;
-      margin-bottom: 12px;
-      color: #94a3b8;
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      color: var(--muted);
     }
     .history-item {
-      background: #0f172a;
-      padding: 10px 14px;
+      background: var(--input-bg);
+      padding: 9px 12px;
       border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 0.9rem;
+      margin-bottom: 7px;
+      font-size: 0.88rem;
       cursor: pointer;
-      border: 1px solid #334155;
+      border: 1px solid var(--border);
     }
-    .history-item:hover { border-color: #38bdf8; }
+    .history-item:hover { border-color: var(--primary); }
     .history-item .url {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #94a3b8;
+      color: var(--muted);
     }
     .disclaimer {
-      margin-top: 24px;
-      font-size: 0.8rem;
-      color: #64748b;
+      margin-top: 20px;
+      font-size: 0.78rem;
+      color: var(--muted);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Trojan</h1>
+    <div class="header">
+      <div>
+        <h1>Trojan</h1>
+      </div>
+      <button class="theme-btn" onclick="toggleTheme()">Toggle Theme</button>
+    </div>
     <p class="tagline">Smart Link Analyzer — Understand what a link is and what it is trying to do</p>
+
+    <div class="stats">
+      <div>People have used Trojan: <strong id="globalCount">Loading...</strong></div>
+      <div style="font-size:0.85rem; opacity:0.8;">Public counter • increases on every scan</div>
+    </div>
 
     <label for="urlInput">Paste any suspicious link:</label>
     <input type="url" id="urlInput" placeholder="https://example.com/..." autocomplete="off">
@@ -207,29 +279,56 @@
     <div class="btn-row">
       <button class="btn-primary" onclick="analyze()">Analyze with Trojan</button>
       <button class="btn-secondary" onclick="clearAll()">Clear</button>
+      <button class="btn-secondary" onclick="exportHistory()">Export History</button>
     </div>
 
     <div id="result"></div>
 
     <div class="history-section" id="historySection" style="display:none;">
-      <h3>Recent Scans</h3>
+      <h3>Recent Scans (this device)</h3>
       <div id="historyList"></div>
     </div>
 
     <p class="disclaimer">
       Trojan performs advanced pattern and context analysis in your browser. 
-      It is useful for quick checks but cannot fully replace professional multi-engine scanners.
-      Always use the Deep Scanning tools for important decisions.
+      The public counter uses a free external service. 
+      Always cross-check important links with professional scanners.
     </p>
   </div>
 
   <script>
-    // Load history on start
-    document.addEventListener('DOMContentLoaded', loadHistory);
+    // Theme
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+      localStorage.setItem('trojanTheme', document.body.classList.contains('light') ? 'light' : 'dark');
+    }
+    if (localStorage.getItem('trojanTheme') === 'light') {
+      document.body.classList.add('light');
+    }
+
+    // Global counter using CountAPI
+    async function updateGlobalCount() {
+      try {
+        const res = await fetch('https://api.countapi.xyz/hit/trojan-link-analyzer/scans');
+        const data = await res.json();
+        document.getElementById('globalCount').textContent = data.value.toLocaleString();
+      } catch (e) {
+        document.getElementById('globalCount').textContent = '—';
+      }
+    }
+
+    // Load counter + history on start
+    document.addEventListener('DOMContentLoaded', () => {
+      updateGlobalCount();
+      loadHistory();
+    });
 
     function analyze() {
       const input = document.getElementById('urlInput').value.trim();
       if (!input) return alert('Please paste a link first.');
+
+      // Increment global counter on every scan
+      updateGlobalCount();
 
       let url;
       try {
@@ -250,8 +349,6 @@
       let intent = 'No strong malicious or scam patterns detected.';
       let explanation = 'Surface analysis did not find clear red flags.';
       let advice = 'Still recommended to verify with professional tools before fully trusting the site.';
-
-      // ========== DETECTION RULES ==========
 
       // High-risk TLDs
       const highRiskTlds = ['.top','.xyz','.icu','.pw','.cc','.work','.click','.loan','.men','.date','.faith','.review','.country','.science','.kim','.help','.tk','.ml','.ga','.cf','.gq','.buzz','.monster','.rest'];
@@ -276,7 +373,7 @@
         signals.push('Unusually long or complex subdomain structure');
       }
 
-      // Credential / wallet keywords
+      // Credential keywords
       const credKeywords = ['login','signin','sign-in','log-in','account','verify','verification','secure','security','update','confirm','unlock','password','credential','authenticate','validation','recover','reset','wallet','seed','phrase','mnemonic','private key'];
       if (credKeywords.some(k => hostname.includes(k) || path.includes(k))) {
         score += 28;
@@ -319,7 +416,7 @@
         explanation = `This is a common phishing technique aimed at stealing your ${matchedBrand} credentials or information.`;
       }
 
-      // Reward / Task / Earn sites
+      // Reward / Task sites
       const rewardKeywords = ['earn','reward','rewards','task','tasks','daily task','free money','make money','cashout','withdraw','referral','invite','bonus','tap','mining'];
       const hasRewardPattern = rewardKeywords.some(k => hostname.includes(k) || path.includes(k) || full.includes(k));
       if (hasRewardPattern) {
@@ -332,7 +429,7 @@
         }
       }
 
-      // Telegram specific
+      // Telegram
       if (hostname === 't.me' || hostname.endsWith('.t.me') || full.includes('t.me/')) {
         score += 8;
         signals.push('Telegram link detected');
@@ -377,9 +474,8 @@
         signals.push('Unusually long URL');
       }
 
-      // ========== FINAL VERDICT ==========
+      // Final verdict
       let level, title;
-
       if (score >= 60) {
         level = 'danger';
         title = '🚨 High Risk – Strong signs of malicious or scam intent';
@@ -408,9 +504,7 @@
         advice = 'Still recommended to verify with professional tools before fully trusting the site.';
       }
 
-      // Cap score at 100
       score = Math.min(score, 100);
-
       showResult(level, title, score, type, intent, explanation, signals, advice, url.href);
       saveToHistory(url.href, title, score);
     }
@@ -440,9 +534,7 @@
         html += `
           <div class="section">
             <div class="label">Detection signals (${signals.length})</div>
-            <ul>
-              ${signals.map(s => `<li>${s}</li>`).join('')}
-            </ul>
+            <ul>${signals.map(s => `<li>${s}</li>`).join('')}</ul>
           </div>
         `;
       }
@@ -451,20 +543,18 @@
           <div class="advice-box">
             <strong>What should you do?</strong><br>${advice}
           </div>
-
           <div class="actions">
             <button class="btn-secondary" onclick="copyReport()">Copy Report</button>
           </div>
         </div>
       `;
 
-      // Deep Scanning
       const encoded = encodeURIComponent(originalUrl);
       const domain = originalUrl.replace(/^https?:\/\//, '').split('/')[0];
       html += `
         <div class="deep-section">
           <h3>🔍 Deep Scanning (Recommended)</h3>
-          <p style="margin-bottom:10px; font-size:0.93rem;">
+          <p style="margin-bottom:8px; font-size:0.9rem;">
             For stronger analysis, check this link on professional tools:
           </p>
           <div class="external-links">
@@ -478,7 +568,6 @@
 
       result.innerHTML = html;
 
-      // Store current report for copy
       window.currentReport = `Trojan Link Analysis Report
 -----------------------------
 URL: ${originalUrl}
@@ -497,18 +586,14 @@ Generated by Trojan – Smart Link Analyzer`;
       if (!window.currentReport) return;
       navigator.clipboard.writeText(window.currentReport).then(() => {
         alert('Report copied to clipboard!');
-      }).catch(() => {
-        alert('Could not copy. Please select and copy manually.');
-      });
+      }).catch(() => alert('Could not copy.'));
     }
 
     function saveToHistory(url, verdict, score) {
       let history = JSON.parse(localStorage.getItem('trojanHistory') || '[]');
-      // Remove duplicates
       history = history.filter(item => item.url !== url);
       history.unshift({ url, verdict, score, time: new Date().toLocaleString() });
-      // Keep only last 10
-      history = history.slice(0, 10);
+      history = history.slice(0, 12);
       localStorage.setItem('trojanHistory', JSON.stringify(history));
       loadHistory();
     }
@@ -517,20 +602,32 @@ Generated by Trojan – Smart Link Analyzer`;
       const history = JSON.parse(localStorage.getItem('trojanHistory') || '[]');
       const section = document.getElementById('historySection');
       const list = document.getElementById('historyList');
-
       if (history.length === 0) {
         section.style.display = 'none';
         return;
       }
-
       section.style.display = 'block';
       list.innerHTML = history.map(item => `
         <div class="history-item" onclick="document.getElementById('urlInput').value='${item.url}'; analyze();">
           <div><strong>${item.verdict}</strong> (${item.score}/100)</div>
           <div class="url">${item.url}</div>
-          <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">${item.time}</div>
+          <div style="font-size:0.78rem; color:var(--muted); margin-top:2px;">${item.time}</div>
         </div>
       `).join('');
+    }
+
+    function exportHistory() {
+      const history = JSON.parse(localStorage.getItem('trojanHistory') || '[]');
+      if (history.length === 0) return alert('No history to export.');
+      let text = 'Trojan Scan History\n===================\n\n';
+      history.forEach((item, i) => {
+        text += `${i+1}. ${item.time}\nURL: ${item.url}\nVerdict: ${item.verdict} (${item.score}/100)\n\n`;
+      });
+      const blob = new Blob([text], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'trojan-history.txt';
+      a.click();
     }
 
     function clearAll() {
