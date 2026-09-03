@@ -284,8 +284,8 @@
     <p class="tagline">Smart Link Analyzer — Understand what a link is and what it is trying to do</p>
 
     <div class="stats">
-      <div>People have used Trojan: <strong id="globalCount">Loading...</strong></div>
-      <div style="font-size:0.85rem; opacity:0.8;">Public counter • increases on every scan</div>
+      <div>Devices that have used Trojan: <strong id="globalCount">Loading...</strong></div>
+      <div style="font-size:0.85rem; opacity:0.8;">Public counter • each device counted once</div>
     </div>
 
     <label for="urlInput">Paste any suspicious link:</label>
@@ -328,12 +328,30 @@
     }
     setThemeColor(document.body.classList.contains('light'));
 
-    // Global counter using CountAPI
+    // Unique-device counter (counts each device once, ever — not every scan)
+    // Note: this counts distinct browsers/devices, not distinct humans —
+    // someone using two devices is counted twice, and a shared device is
+    // counted once no matter how many people use it. There's no way to
+    // count real-world people from a static client-side app.
+    const COUNTER_BASE = 'https://countapi.mileshilliard.com/api/v1';
+    const COUNTER_KEY = 'trojan-link-analyzer-unique-devices';
+
     async function updateGlobalCount() {
       try {
-        const res = await fetch('https://api.countapi.xyz/hit/trojan-link-analyzer/scans');
-        const data = await res.json();
-        document.getElementById('globalCount').textContent = data.value.toLocaleString();
+        let value;
+        if (!localStorage.getItem('trojanDeviceCounted')) {
+          // First time this device has ever loaded the app: count it once.
+          const res = await fetch(`${COUNTER_BASE}/hit/${COUNTER_KEY}`);
+          const data = await res.json();
+          value = data.value;
+          localStorage.setItem('trojanDeviceCounted', 'true');
+        } else {
+          // Returning device: just read the current total, don't increment.
+          const res = await fetch(`${COUNTER_BASE}/get/${COUNTER_KEY}`);
+          const data = await res.json();
+          value = data.value;
+        }
+        document.getElementById('globalCount').textContent = value.toLocaleString();
       } catch (e) {
         document.getElementById('globalCount').textContent = '—';
       }
@@ -348,9 +366,6 @@
     function analyze() {
       const input = document.getElementById('urlInput').value.trim();
       if (!input) return alert('Please paste a link first.');
-
-      // Increment global counter on every scan
-      updateGlobalCount();
 
       let url;
       try {
