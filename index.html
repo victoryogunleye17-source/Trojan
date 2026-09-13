@@ -4,18 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trojan – Smart Link Analyzer</title>
-
-  <!-- PWA -->
-  <meta name="description" content="Understand what a link is and what it is trying to do before you click it.">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0b1120">
-  <link rel="icon" href="icon-192.png" type="image/png">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Trojan">
-  <meta name="mobile-web-app-capable" content="yes">
-
   <style>
     :root {
       --bg: #0b1120;
@@ -268,24 +256,117 @@
       font-size: 0.78rem;
       color: var(--muted);
     }
+    .auth-wrap {
+      max-width: 380px;
+      margin: 60px auto;
+      background: var(--card);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+    .auth-wrap h1 {
+      font-size: 1.6rem;
+      color: #38bdf8;
+      margin-bottom: 4px;
+    }
+    body.light .auth-wrap h1 { color: #0284c7; }
+    .auth-wrap .tagline { margin-bottom: 20px; }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 13px 15px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+    input[type="text"]:focus, input[type="password"]:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .auth-error {
+      color: #f87171;
+      font-size: 0.88rem;
+      margin-bottom: 10px;
+      min-height: 1.1em;
+    }
+    .auth-switch {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    .auth-switch a {
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .user-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .user-bar span strong { color: var(--text); }
   </style>
 </head>
 <body>
-  <div class="container">
+
+  <div class="auth-wrap" id="authScreen">
+    <h1>Trojan</h1>
+    <p class="tagline">Sign in to start analyzing links</p>
+    <p style="font-size:0.85rem; color:var(--muted); margin-top:-14px; margin-bottom:6px;">
+      Accounts on this device: <strong id="userCountLabel">0</strong>
+    </p>
+    <p style="font-size:0.85rem; color:var(--muted); margin-top:0; margin-bottom:18px;">
+      Total sign-ups (everyone): <strong id="globalSignupCount">Loading...</strong>
+    </p>
+
+    <div id="loginForm">
+      <div class="auth-error" id="loginError"></div>
+      <label for="loginUser">Username</label>
+      <input type="text" id="loginUser" autocomplete="username">
+      <label for="loginPass">Password</label>
+      <input type="password" id="loginPass" autocomplete="current-password">
+      <div class="btn-row">
+        <button class="btn-primary" onclick="login()">Log In</button>
+      </div>
+      <div class="auth-switch">No account? <a onclick="showAuth('signup')">Sign up</a></div>
+    </div>
+
+    <div id="signupForm" style="display:none;">
+      <div class="auth-error" id="signupError"></div>
+      <label for="signupUser">Choose a username</label>
+      <input type="text" id="signupUser" autocomplete="username">
+      <label for="signupPass">Choose a password</label>
+      <input type="password" id="signupPass" autocomplete="new-password">
+      <div class="btn-row">
+        <button class="btn-primary" onclick="signup()">Create Account</button>
+      </div>
+      <div class="auth-switch">Already have an account? <a onclick="showAuth('login')">Log in</a></div>
+    </div>
+  </div>
+
+  <div class="container" id="appScreen" style="display:none;">
+    <div class="user-bar">
+      <span>Signed in as <strong id="currentUserLabel"></strong></span>
+      <a onclick="logout()" style="color:var(--primary); cursor:pointer; font-weight:600;">Log out</a>
+    </div>
     <div class="header">
       <div>
         <h1>Trojan</h1>
       </div>
-      <div style="display:flex; gap:8px;">
-        <button class="theme-btn" id="installBtn" onclick="installApp()" style="display:none;">Install App</button>
-        <button class="theme-btn" onclick="toggleTheme()">Toggle Theme</button>
-      </div>
+      <button class="theme-btn" onclick="toggleTheme()">Toggle Theme</button>
     </div>
     <p class="tagline">Smart Link Analyzer — Understand what a link is and what it is trying to do</p>
 
     <div class="stats">
-      <div>Devices that have used Trojan: <strong id="globalCount">Loading...</strong></div>
-      <div style="font-size:0.85rem; opacity:0.8;">Public counter • each device counted once</div>
+      <div>People have used Trojan: <strong id="globalCount">Loading...</strong></div>
+      <div style="font-size:0.85rem; opacity:0.8;">Public counter • increases on every scan</div>
     </div>
 
     <label for="urlInput">Paste any suspicious link:</label>
@@ -312,60 +393,139 @@
   </div>
 
   <script>
+    // --- Simple local accounts (small-scale, no email/confirmation) ---
+    // NOTE: accounts live only in this browser's localStorage. Not secure
+    // encryption, just light obscuring — don't use for sensitive data.
+    function obscure(str) {
+      // Not real encryption — just avoids storing raw plaintext passwords.
+      return btoa(unescape(encodeURIComponent(str)));
+    }
+    function getUsers() {
+      return JSON.parse(localStorage.getItem('trojanUsers') || '{}');
+    }
+    function updateUserCount() {
+      const el = document.getElementById('userCountLabel');
+      if (el) el.textContent = Object.keys(getUsers()).length;
+    }
+    // Global signup counter (shared across everyone, via CountAPI)
+    async function refreshGlobalSignupCount() {
+      const el = document.getElementById('globalSignupCount');
+      if (!el) return;
+      try {
+        const res = await fetch('https://api.countapi.xyz/get/trojan-link-analyzer/signups');
+        const data = await res.json();
+        el.textContent = (data.value || 0).toLocaleString();
+      } catch (e) {
+        el.textContent = '—';
+      }
+    }
+    async function bumpGlobalSignupCount() {
+      const el = document.getElementById('globalSignupCount');
+      try {
+        const res = await fetch('https://api.countapi.xyz/hit/trojan-link-analyzer/signups');
+        const data = await res.json();
+        if (el) el.textContent = (data.value || 0).toLocaleString();
+      } catch (e) {
+        if (el) el.textContent = '—';
+      }
+    }
+    function saveUsers(users) {
+      localStorage.setItem('trojanUsers', JSON.stringify(users));
+    }
+    function showAuth(which) {
+      document.getElementById('loginForm').style.display = which === 'login' ? 'block' : 'none';
+      document.getElementById('signupForm').style.display = which === 'signup' ? 'block' : 'none';
+      document.getElementById('loginError').textContent = '';
+      document.getElementById('signupError').textContent = '';
+    }
+    function signup() {
+      const user = document.getElementById('signupUser').value.trim();
+      const pass = document.getElementById('signupPass').value;
+      const errEl = document.getElementById('signupError');
+      if (!user || !pass) { errEl.textContent = 'Please fill in both fields.'; return; }
+      if (pass.length < 4) { errEl.textContent = 'Password must be at least 4 characters.'; return; }
+      const users = getUsers();
+      if (users[user.toLowerCase()]) { errEl.textContent = 'That username is already taken.'; return; }
+      users[user.toLowerCase()] = { username: user, pass: obscure(pass) };
+      saveUsers(users);
+      updateUserCount();
+      bumpGlobalSignupCount();
+      localStorage.setItem('trojanCurrentUser', user.toLowerCase());
+      enterApp(user);
+    }
+    function login() {
+      const user = document.getElementById('loginUser').value.trim();
+      const pass = document.getElementById('loginPass').value;
+      const errEl = document.getElementById('loginError');
+      if (!user || !pass) { errEl.textContent = 'Please fill in both fields.'; return; }
+      const users = getUsers();
+      const record = users[user.toLowerCase()];
+      if (!record || record.pass !== obscure(pass)) {
+        errEl.textContent = 'Incorrect username or password.';
+        return;
+      }
+      localStorage.setItem('trojanCurrentUser', user.toLowerCase());
+      enterApp(record.username);
+    }
+    function logout() {
+      localStorage.removeItem('trojanCurrentUser');
+      document.getElementById('appScreen').style.display = 'none';
+      document.getElementById('authScreen').style.display = 'block';
+      document.getElementById('loginUser').value = '';
+      document.getElementById('loginPass').value = '';
+      updateUserCount();
+      refreshGlobalSignupCount();
+      showAuth('login');
+    }
+    function enterApp(displayName) {
+      document.getElementById('authScreen').style.display = 'none';
+      document.getElementById('appScreen').style.display = 'block';
+      document.getElementById('currentUserLabel').textContent = displayName;
+      updateGlobalCount();
+      loadHistory();
+    }
+    function checkSession() {
+      updateUserCount();
+      refreshGlobalSignupCount();
+      const currentKey = localStorage.getItem('trojanCurrentUser');
+      if (currentKey) {
+        const users = getUsers();
+        const record = users[currentKey];
+        if (record) { enterApp(record.username); return; }
+      }
+      document.getElementById('authScreen').style.display = 'block';
+      document.getElementById('appScreen').style.display = 'none';
+    }
+
     // Theme
     function toggleTheme() {
       document.body.classList.toggle('light');
-      const isLight = document.body.classList.contains('light');
-      localStorage.setItem('trojanTheme', isLight ? 'light' : 'dark');
-      setThemeColor(isLight);
-    }
-    function setThemeColor(isLight) {
-      const meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute('content', isLight ? '#f1f5f9' : '#0b1120');
+      localStorage.setItem('trojanTheme', document.body.classList.contains('light') ? 'light' : 'dark');
     }
     if (localStorage.getItem('trojanTheme') === 'light') {
       document.body.classList.add('light');
     }
-    setThemeColor(document.body.classList.contains('light'));
 
-    // Unique-device counter (counts each device once, ever — not every scan)
-    // Note: this counts distinct browsers/devices, not distinct humans —
-    // someone using two devices is counted twice, and a shared device is
-    // counted once no matter how many people use it. There's no way to
-    // count real-world people from a static client-side app.
-    const COUNTER_BASE = 'https://countapi.mileshilliard.com/api/v1';
-    const COUNTER_KEY = 'trojan-link-analyzer-unique-devices';
-
+    // Global counter using CountAPI
     async function updateGlobalCount() {
       try {
-        let value;
-        if (!localStorage.getItem('trojanDeviceCounted')) {
-          // First time this device has ever loaded the app: count it once.
-          const res = await fetch(`${COUNTER_BASE}/hit/${COUNTER_KEY}`);
-          const data = await res.json();
-          value = data.value;
-          localStorage.setItem('trojanDeviceCounted', 'true');
-        } else {
-          // Returning device: just read the current total, don't increment.
-          const res = await fetch(`${COUNTER_BASE}/get/${COUNTER_KEY}`);
-          const data = await res.json();
-          value = data.value;
-        }
-        document.getElementById('globalCount').textContent = value.toLocaleString();
+        const res = await fetch('https://api.countapi.xyz/hit/trojan-link-analyzer/scans');
+        const data = await res.json();
+        document.getElementById('globalCount').textContent = data.value.toLocaleString();
       } catch (e) {
         document.getElementById('globalCount').textContent = '—';
       }
     }
 
-    // Load counter + history on start
-    document.addEventListener('DOMContentLoaded', () => {
-      updateGlobalCount();
-      loadHistory();
-    });
+    // Check login state on start (loads counter + history if already signed in)
+    document.addEventListener('DOMContentLoaded', checkSession);
 
     function analyze() {
       const input = document.getElementById('urlInput').value.trim();
       if (!input) return alert('Please paste a link first.');
+
+      // Increment global counter on every scan
+      updateGlobalCount();
 
       let url;
       try {
@@ -426,280 +586,4 @@
         signals.push('Contains @ symbol (classic URL obfuscation)');
         type = 'Obfuscated Phishing Link';
         intent = 'Hide the real destination of the link';
-        explanation = 'Browsers ignore the part before the @. This is a classic phishing technique.';
-      }
-
-      // Brand impersonation
-      const brands = ['paypal','google','microsoft','apple','amazon','facebook','instagram','whatsapp','netflix','spotify','binance','coinbase','metamask','chase','wellsfargo','bankofamerica','citibank','hsbc','dhl','fedex','ups','usps','irs','linkedin','outlook','office365','telegram','discord'];
-      let matchedBrand = null;
-      for (const brand of brands) {
-        if (hostname.includes(brand) && 
-            !hostname.endsWith(brand + '.com') && 
-            !hostname.endsWith(brand + '.net') && 
-            !hostname.endsWith(brand + '.org') &&
-            !hostname.endsWith(brand + '.co') &&
-            !hostname.endsWith(brand + '.io') &&
-            !hostname.endsWith(brand + '.app') &&
-            !hostname.endsWith(brand + '.me')) {
-          score += 42;
-          signals.push(`Appears to impersonate “${brand}”`);
-          matchedBrand = brand;
-          break;
-        }
-      }
-      if (matchedBrand) {
-        type = `Brand Impersonation (${matchedBrand})`;
-        intent = `Pretend to be the official ${matchedBrand} website`;
-        explanation = `This is a common phishing technique aimed at stealing your ${matchedBrand} credentials or information.`;
-      }
-
-      // Reward / Task sites
-      const rewardKeywords = ['earn','reward','rewards','task','tasks','daily task','free money','make money','cashout','withdraw','referral','invite','bonus','tap','mining'];
-      const hasRewardPattern = rewardKeywords.some(k => hostname.includes(k) || path.includes(k) || full.includes(k));
-      if (hasRewardPattern) {
-        score += 22;
-        signals.push('Matches common “earn money / tasks / rewards” pattern');
-        if (type === 'Generic Website') {
-          type = 'Reward / Task / Referral Site';
-          intent = 'Get users to complete tasks, refer others, or submit information for promised rewards';
-          explanation = 'These sites are very common. Many collect personal data, push low-quality offers, or never pay out reliably.';
-        }
-      }
-
-      // Telegram
-      if (hostname === 't.me' || hostname.endsWith('.t.me') || full.includes('t.me/')) {
-        score += 8;
-        signals.push('Telegram link detected');
-        if (path.includes('bot') || full.includes('bot') || full.includes('startapp')) {
-          score += 12;
-          signals.push('Appears to be a Telegram bot link');
-          type = 'Telegram Bot Link';
-          intent = 'Open a Telegram bot (can be legitimate or malicious)';
-          explanation = 'Telegram bots can be useful or dangerous. Be careful with bots that ask for personal information, seed phrases, or payments.';
-          advice = 'Only open Telegram bots from sources you fully trust. Check the bot username carefully.';
-        }
-      }
-
-      // File download
-      if (/\.(exe|apk|dmg|scr|bat|cmd|js|vbs|wsf|zip|rar|7z|msi|iso)$/i.test(path) || 
-          path.includes('download') || path.includes('install') || path.includes('setup')) {
-        score += 26;
-        signals.push('Strong indicators of a file download');
-        if (type === 'Generic Website') {
-          type = 'Possible Malicious or Unwanted Download';
-          intent = 'Get you to download and run a file';
-          explanation = 'These links often deliver malware or unwanted software.';
-        }
-      }
-
-      // Shorteners
-      const shorteners = ['bit.ly','tinyurl.com','t.co','goo.gl','ow.ly','is.gd','buff.ly','adf.ly','cutt.ly','shorturl.at','tiny.cc','rebrand.ly'];
-      if (shorteners.some(s => hostname.includes(s))) {
-        score += 14;
-        signals.push('Uses a URL shortener (hides final destination)');
-      }
-
-      // HTTP
-      if (url.protocol === 'http:') {
-        score += 10;
-        signals.push('Uses insecure HTTP (not encrypted)');
-      }
-
-      // Long URL
-      if (full.length > 130) {
-        score += 7;
-        signals.push('Unusually long URL');
-      }
-
-      // Final verdict
-      let level, title;
-      if (score >= 60) {
-        level = 'danger';
-        title = '🚨 High Risk – Strong signs of malicious or scam intent';
-        advice = 'Do not enter any personal information, passwords, or download anything. Close the page.';
-      } else if (score >= 38) {
-        level = 'warning';
-        title = '⚠️ Suspicious – Exercise strong caution';
-        advice = 'This link shows multiple warning signs. Avoid entering personal data. Verify with professional scanners.';
-      } else if (score >= 20 || isHighRiskTld) {
-        level = 'caution';
-        title = '⚡ Caution – Risky patterns detected';
-        if (isHighRiskTld && hasRewardPattern) {
-          type = 'Reward / Task Site on High-Risk Domain';
-          explanation = 'The combination of a heavily abused domain with a reward/task model is a very common pattern for low-trust or scam sites.';
-          advice = 'Treat with caution. Do not enter real personal information or expect reliable payouts.';
-        } else if (isHighRiskTld) {
-          explanation = 'This domain uses a top-level domain that is frequently abused for scams. Extra caution is recommended.';
-          advice = 'Be careful. Prefer not to enter personal information until you verify the site.';
-        }
-      } else {
-        level = 'safe';
-        title = '✅ Appears relatively normal';
-        type = 'Looks Legitimate / Low Risk';
-        intent = 'No strong malicious or scam patterns detected';
-        explanation = 'Surface analysis did not find clear red flags. This does not guarantee the site is 100% safe.';
-        advice = 'Still recommended to verify with professional tools before fully trusting the site.';
-      }
-
-      score = Math.min(score, 100);
-      showResult(level, title, score, type, intent, explanation, signals, advice, url.href);
-      saveToHistory(url.href, title, score);
-    }
-
-    function showResult(level, title, score, type, intent, explanation, signals, advice, originalUrl) {
-      const result = document.getElementById('result');
-      result.style.display = 'block';
-
-      let html = `
-        <div class="card ${level}">
-          <div class="result-title">${title}</div>
-          <div class="score-box">Risk Score: ${score}/100</div>
-          
-          <div class="section">
-            <div class="label">What kind of link is this?</div>
-            <div class="value">${type}</div>
-          </div>
-          
-          <div class="section">
-            <div class="label">What is it most likely trying to do?</div>
-            <div class="value">${intent}</div>
-            <div class="explanation">${explanation}</div>
-          </div>
-      `;
-
-      if (signals.length > 0) {
-        html += `
-          <div class="section">
-            <div class="label">Detection signals (${signals.length})</div>
-            <ul>${signals.map(s => `<li>${s}</li>`).join('')}</ul>
-          </div>
-        `;
-      }
-
-      html += `
-          <div class="advice-box">
-            <strong>What should you do?</strong><br>${advice}
-          </div>
-          <div class="actions">
-            <button class="btn-secondary" onclick="copyReport()">Copy Report</button>
-          </div>
-        </div>
-      `;
-
-      const encoded = encodeURIComponent(originalUrl);
-      const domain = originalUrl.replace(/^https?:\/\//, '').split('/')[0];
-      html += `
-        <div class="deep-section">
-          <h3>🔍 Deep Scanning (Recommended)</h3>
-          <p style="margin-bottom:8px; font-size:0.9rem;">
-            For stronger analysis, check this link on professional tools:
-          </p>
-          <div class="external-links">
-            <a href="https://www.virustotal.com/gui/search/${encoded}" target="_blank" rel="noopener">VirusTotal</a>
-            <a href="https://urlscan.io/search/#${encoded}" target="_blank" rel="noopener">urlscan.io</a>
-            <a href="https://transparencyreport.google.com/safe-browsing/search?url=${encoded}" target="_blank" rel="noopener">Google Safe Browsing</a>
-            <a href="https://www.scamadviser.com/check-website/${domain}" target="_blank" rel="noopener">Scamadviser</a>
-          </div>
-        </div>
-      `;
-
-      result.innerHTML = html;
-
-      window.currentReport = `Trojan Link Analysis Report
------------------------------
-URL: ${originalUrl}
-Verdict: ${title}
-Risk Score: ${score}/100
-Type: ${type}
-Intent: ${intent}
-Explanation: ${explanation}
-Signals: ${signals.join('; ') || 'None'}
-Advice: ${advice}
------------------------------
-Generated by Trojan – Smart Link Analyzer`;
-    }
-
-    function copyReport() {
-      if (!window.currentReport) return;
-      navigator.clipboard.writeText(window.currentReport).then(() => {
-        alert('Report copied to clipboard!');
-      }).catch(() => alert('Could not copy.'));
-    }
-
-    function saveToHistory(url, verdict, score) {
-      let history = JSON.parse(localStorage.getItem('trojanHistory') || '[]');
-      history = history.filter(item => item.url !== url);
-      history.unshift({ url, verdict, score, time: new Date().toLocaleString() });
-      history = history.slice(0, 12);
-      localStorage.setItem('trojanHistory', JSON.stringify(history));
-      loadHistory();
-    }
-
-    function loadHistory() {
-      const history = JSON.parse(localStorage.getItem('trojanHistory') || '[]');
-      const section = document.getElementById('historySection');
-      const list = document.getElementById('historyList');
-      if (history.length === 0) {
-        section.style.display = 'none';
-        return;
-      }
-      section.style.display = 'block';
-      list.innerHTML = history.map(item => `
-        <div class="history-item" onclick="document.getElementById('urlInput').value='${item.url}'; analyze();">
-          <div><strong>${item.verdict}</strong> (${item.score}/100)</div>
-          <div class="url">${item.url}</div>
-          <div style="font-size:0.78rem; color:var(--muted); margin-top:2px;">${item.time}</div>
-        </div>
-      `).join('');
-    }
-
-    function exportHistory() {
-      const history = JSON.parse(localStorage.getItem('trojanHistory') || '[]');
-      if (history.length === 0) return alert('No history to export.');
-      let text = 'Trojan Scan History\n===================\n\n';
-      history.forEach((item, i) => {
-        text += `${i+1}. ${item.time}\nURL: ${item.url}\nVerdict: ${item.verdict} (${item.score}/100)\n\n`;
-      });
-      const blob = new Blob([text], { type: 'text/plain' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'trojan-history.txt';
-      a.click();
-    }
-
-    function clearAll() {
-      document.getElementById('urlInput').value = '';
-      document.getElementById('result').style.display = 'none';
-      window.currentReport = null;
-    }
-
-    // PWA: register service worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch((err) => {
-          console.warn('Service worker registration failed:', err);
-        });
-      });
-    }
-
-    // PWA: "Add to Home Screen" / install prompt (Chrome/Edge/Android)
-    let deferredInstallPrompt = null;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredInstallPrompt = e;
-      document.getElementById('installBtn').style.display = 'inline-block';
-    });
-    function installApp() {
-      if (!deferredInstallPrompt) return;
-      deferredInstallPrompt.prompt();
-      deferredInstallPrompt.userChoice.finally(() => {
-        deferredInstallPrompt = null;
-        document.getElementById('installBtn').style.display = 'none';
-      });
-    }
-    window.addEventListener('appinstalled', () => {
-      document.getElementById('installBtn').style.display = 'none';
-    });
-  </script>
-</body>
-</html>
+        explan
