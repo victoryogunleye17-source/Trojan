@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trojan – Smart Link Analyzer</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b1120">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <style>
     :root {
       --bg: #0b1120;
@@ -360,7 +364,10 @@
       <div>
         <h1>Trojan</h1>
       </div>
-      <button class="theme-btn" onclick="toggleTheme()">Toggle Theme</button>
+      <div style="display:flex; gap:8px;">
+        <button class="theme-btn" id="installBtn" onclick="installApp()" style="display:none;">Install App</button>
+        <button class="theme-btn" onclick="toggleTheme()">Toggle Theme</button>
+      </div>
     </div>
     <p class="tagline">Smart Link Analyzer — Understand what a link is and what it is trying to do</p>
 
@@ -496,6 +503,36 @@
       document.getElementById('authScreen').style.display = 'block';
       document.getElementById('appScreen').style.display = 'none';
     }
+
+    // --- PWA: service worker + install prompt ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch((err) => {
+          console.warn('Service worker registration failed:', err);
+        });
+      });
+    }
+
+    let deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      const btn = document.getElementById('installBtn');
+      if (btn) btn.style.display = 'inline-block';
+    });
+    function installApp() {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      deferredInstallPrompt.userChoice.finally(() => {
+        deferredInstallPrompt = null;
+        const btn = document.getElementById('installBtn');
+        if (btn) btn.style.display = 'none';
+      });
+    }
+    window.addEventListener('appinstalled', () => {
+      const btn = document.getElementById('installBtn');
+      if (btn) btn.style.display = 'none';
+    });
 
     // Theme
     function toggleTheme() {
